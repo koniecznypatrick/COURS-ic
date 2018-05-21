@@ -1,0 +1,52 @@
+pipeline{
+	agent any  
+	
+	tools { 
+        maven 'Maven 3.5.3' 
+        jdk 'jdk8' 
+    }
+    
+	stages{
+		stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    echo "PWD= ${PWD}"
+                ''' 
+            }
+        }
+
+	     stage ("Build"){
+	       steps {
+	         sh '''
+	           echo "Building app"
+	           mvn clean install
+	         '''
+	       }
+          
+     	}
+     	
+     	stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+        
+     	stage("Start services"){
+       		steps{
+        		sh '''
+        		echo 'Starting SpringBootApp....'
+         		cd target
+            	java -jar demo-0.0.1-SNAPSHOT.jar
+         		'''
+        	}
+    	}
+	}
+}
